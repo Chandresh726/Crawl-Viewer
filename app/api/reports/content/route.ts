@@ -13,51 +13,51 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Validate path to prevent traversal
     if (path.includes('..') || !path.match(/^[\w-]+\/[\w-]+/)) {
+      console.log('Invalid path format detected');
       return NextResponse.json(
         { error: 'Invalid path format' },
         { status: 400 }
       );
     }
 
-    // Transform the path to include 'report-' prefix if needed
     const pathParts = path.split('/');
-    if (pathParts.length >= 2) {
-      const [project, reportId, ...rest] = pathParts;
-      const formattedReportId = reportId.startsWith('report-') ? reportId : `report-${reportId}`;
-      // Reconstruct the path with the report directory and any remaining path components
-      const transformedPath = [project, formattedReportId, ...rest].join('/');
-      console.log('Attempting to read file:', transformedPath);
-
-      // Check if file exists
-      if (!await fileExists(transformedPath)) {
-        return NextResponse.json(
-          { error: `File not found: ${transformedPath}` },
-          { status: 404 }
-        );
-      }
-
-      // Read and parse file content
-      try {
-        const content = await readFile(transformedPath);
-        const jsonContent = JSON.parse(content);
-        return NextResponse.json(jsonContent);
-      } catch (error) {
-        console.error('Error reading/parsing file:', error);
-        return NextResponse.json(
-          { error: 'Invalid JSON content' },
-          { status: 422 }
-        );
-      }
+    if (pathParts.length < 2) {
+      console.log('Path format missing required components');
+      return NextResponse.json(
+        { error: 'Invalid path structure' },
+        { status: 400 }
+      );
     }
 
-    return NextResponse.json(
-      { error: 'Invalid path format' },
-      { status: 400 }
-    );
+    const [project, reportId, ...rest] = pathParts;
+    const formattedReportId = reportId.startsWith('report-') ? reportId : `report-${reportId}`;
+    const transformedPath = [project, formattedReportId, ...rest].join('/');
+    
+    console.log(`Processing report request for project: ${project}`);
+
+    if (!await fileExists(transformedPath)) {
+      console.log('Requested report file not found');
+      return NextResponse.json(
+        { error: 'Report not found' },
+        { status: 404 }
+      );
+    }
+
+    try {
+      const content = await readFile(transformedPath);
+      const jsonContent = JSON.parse(content);
+      console.log('Successfully retrieved report content');
+      return NextResponse.json(jsonContent);
+    } catch (error) {
+      console.log('Failed to parse report content');
+      return NextResponse.json(
+        { error: 'Invalid report format' },
+        { status: 422 }
+      );
+    }
   } catch (error) {
-    console.error('Error processing request:', error);
+    console.error('Internal server error while processing report request');
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

@@ -16,6 +16,7 @@ interface FolderItemProps {
   onSelect: (path: string) => void;
   expandedFolders: Set<string>;
   onToggleExpand: (path: string) => void;
+  selectedFolder: string | null;
 }
 
 // Component for rendering individual folder items
@@ -26,7 +27,8 @@ function FolderItem({
   isSelected,
   onSelect,
   expandedFolders,
-  onToggleExpand
+  onToggleExpand,
+  selectedFolder
 }: FolderItemProps) {
   const hasSubfolders = Object.values(structure).some(value => value !== null);
   const isExpanded = expandedFolders.has(path);
@@ -43,7 +45,7 @@ function FolderItem({
       <button
         onClick={handleClick}
         className={`flex items-center w-full hover:bg-gray-100 px-2 py-2 rounded text-left group
-          ${isSelected ? 'bg-blue-50' : ''}`}
+          ${isSelected ? 'bg-blue-100' : ''}`}
       >
         <div className="flex items-center w-full min-w-0">
           <div className="flex-shrink-0 flex items-center">
@@ -77,18 +79,22 @@ function FolderItem({
         <div className="ml-4 mt-1 border-l border-gray-200 pl-2">
           {Object.entries(structure)
             .filter(([, value]) => value !== null)
-            .map(([subName, subStructure]) => (
-              <FolderItem
-                key={subName}
-                name={subName}
-                path={`${path}/${subName}`}
-                structure={subStructure as ReportStructure}
-                isSelected={false}
-                onSelect={onSelect}
-                expandedFolders={expandedFolders}
-                onToggleExpand={onToggleExpand}
-              />
-            ))}
+            .map(([subName, subStructure]) => {
+              const subPath = `${path}/${subName}`;
+              return (
+                <FolderItem
+                  key={subName}
+                  name={subName}
+                  path={subPath}
+                  structure={subStructure as ReportStructure}
+                  isSelected={subPath === selectedFolder}
+                  onSelect={onSelect}
+                  expandedFolders={expandedFolders}
+                  onToggleExpand={onToggleExpand}
+                  selectedFolder={selectedFolder}
+                />
+              );
+            })}
         </div>
       )}
     </div>
@@ -130,7 +136,7 @@ export default function FileTree({
       <button
         onClick={() => onFolderSelect(basePath)}
         className={`flex items-center w-full hover:bg-gray-100 px-2 py-2 rounded text-left group
-          ${selectedFolder === basePath ? 'bg-blue-50' : ''}`}
+          ${selectedFolder === basePath ? 'bg-blue-100' : ''}`}
       >
         <div className="flex items-center w-full min-w-0">
           <div className="flex-shrink-0 flex items-center">
@@ -145,7 +151,7 @@ export default function FileTree({
           </span>
         </div>
       </button>
-
+      
       {/* Folder structure */}
       {Object.entries(structure)
         .filter(([, value]) => showOnlyFolders ? value !== null : true)
@@ -159,6 +165,7 @@ export default function FileTree({
             onSelect={onFolderSelect}
             expandedFolders={expandedFolders}
             onToggleExpand={handleToggleExpand}
+            selectedFolder={selectedFolder}
           />
         ))}
     </div>

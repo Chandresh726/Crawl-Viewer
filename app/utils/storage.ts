@@ -79,7 +79,7 @@ export async function listItems(prefix: string = ''): Promise<string[]> {
 
     try {
       const response = await s3Client.send(command);
-      console.log('S3 response:', JSON.stringify(response, null, 2));
+      // console.log('S3 response:', JSON.stringify(response, null, 2));
 
       if (prefix) {
         // If listing reports within a project, look for CommonPrefixes that contain 'report-'
@@ -132,7 +132,7 @@ export async function listItemsRecursively(prefix: string = ''): Promise<string[
 
     try {
       const response = await s3Client.send(command);
-      console.log('S3 recursive response:', JSON.stringify(response, null, 2));
+      // console.log('S3 recursive response:', JSON.stringify(response, null, 2));
 
       // Get all file paths relative to the prefix
       const items = (response.Contents || [])

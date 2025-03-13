@@ -6,39 +6,37 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const project = searchParams.get('project');
 
-    console.log('Fetching reports for project:', project);
-
     if (project) {
+      console.log(`Fetching reports for project: ${project}`);
       const reports = await listItems(project);
-      console.log('Raw reports:', reports);
       
-      // Filter and clean up report names
       const filteredReports = reports
         .filter(name => name.startsWith('report-'))
         .map(name => name.replace('report-', ''))
-        .filter(name => name !== '');
+        .filter(Boolean);
 
-      console.log('Filtered reports:', filteredReports);
-      
+      console.log(`Found ${filteredReports.length} reports for project ${project}`);
       return NextResponse.json({
         success: true,
         reports: filteredReports
       });
     }
 
+    console.log('Fetching list of available projects');
     const projects = await listItems();
-    console.log('Available projects:', projects);
+    const validProjects = projects.filter(Boolean);
+    console.log(`Found ${validProjects.length} projects`);
 
     return NextResponse.json({
       success: true,
-      projects: projects.filter(p => p !== '')
+      projects: validProjects
     });
 
   } catch (error) {
-    console.error('Error fetching available reports:', error);
+    console.error('Failed to fetch reports or projects');
     return NextResponse.json({
       success: false,
-      error: 'Failed to fetch available reports',
+      error: 'Failed to fetch data',
       details: error instanceof Error ? error.message : 'Unknown error'
     }, { status: 500 });
   }

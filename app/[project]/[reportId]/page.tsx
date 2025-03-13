@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { IconLoader2, IconAlertCircle, IconFileAnalytics } from '@tabler/icons-react';
-import { ReportStructure } from '@/app/types/report';
+import { ReportStructure , ReportData } from '@/app/types/report';
 import Header from '@/app/components/Header';
 import Sidebar from '@/app/components/Sidebar';
 import ResizableDivider from '@/app/components/ResizableDivider';
@@ -14,7 +14,7 @@ export default function ReportPage() {
   const router = useRouter();
   const [reportStructure, setReportStructure] = useState<ReportStructure | null>(null);
   const [selectedFolder, setSelectedFolder] = useState<string | null>(null);
-  const [fileContent, setFileContent] = useState<any | null>(null);
+  const [fileContent, setFileContent] = useState<ReportData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isFileLoading, setIsFileLoading] = useState(false);

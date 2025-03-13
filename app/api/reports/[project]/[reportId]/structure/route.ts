@@ -7,21 +7,16 @@ function buildStructureFromPaths(paths: string[]): ReportStructure {
 
   for (const path of paths) {
     let current = structure;
-    // Split by either forward slash or backslash
     const parts = path.split(/[\\/]/);
 
     for (let i = 0; i < parts.length; i++) {
       const part = parts[i];
       if (i === parts.length - 1) {
-        // Only add if it's result.json
         if (part === 'result.json') {
           current[part] = null;
         }
       } else {
-        // It's a directory
-        if (!current[part]) {
-          current[part] = {};
-        }
+        current[part] = current[part] || {};
         current = current[part] as ReportStructure;
       }
     }
@@ -39,28 +34,27 @@ export async function GET(
     const formattedReportId = reportId.startsWith('report-') ? reportId : `report-${reportId}`;
     const path = `${project}/${formattedReportId}`;
 
-    console.log('Getting structure for path:', path);
+    console.log(`Building structure for report: ${reportId} in project: ${project}`);
 
-    // Get all files recursively
     const files = await listItemsRecursively(path);
-    console.log('Found files:', files);
+    console.log(`Found ${files.length} files in report`);
 
-    // Build directory structure
     const structure = buildStructureFromPaths(files);
-    console.log('Built structure:', JSON.stringify(structure, null, 2));
-
+    
     if (Object.keys(structure).length === 0) {
+      console.log('No valid files found in report structure');
       return NextResponse.json(
-        { error: 'No files found in report' },
+        { error: 'Empty report structure' },
         { status: 404 }
       );
     }
 
+    console.log('Successfully built report structure');
     return NextResponse.json(structure);
   } catch (error) {
-    console.error('Error processing request:', error);
+    console.error('Failed to build report structure');
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: 'Failed to process report structure' },
       { status: 500 }
     );
   }
