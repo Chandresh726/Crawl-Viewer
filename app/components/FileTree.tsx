@@ -8,7 +8,94 @@ import {
   IconFileAnalytics
 } from '@tabler/icons-react';
 
-export interface FileTreeProps {
+interface FolderItemProps {
+  name: string;
+  path: string;
+  structure: ReportStructure;
+  isSelected: boolean;
+  onSelect: (path: string) => void;
+  expandedFolders: Set<string>;
+  onToggleExpand: (path: string) => void;
+}
+
+// Component for rendering individual folder items
+function FolderItem({ 
+  name, 
+  path, 
+  structure, 
+  isSelected,
+  onSelect,
+  expandedFolders,
+  onToggleExpand
+}: FolderItemProps) {
+  const hasSubfolders = Object.values(structure).some(value => value !== null);
+  const isExpanded = expandedFolders.has(path);
+
+  const handleClick = () => {
+    onSelect(path);
+    if (hasSubfolders) {
+      onToggleExpand(path);
+    }
+  };
+
+  return (
+    <div className="select-none">
+      <button
+        onClick={handleClick}
+        className={`flex items-center w-full hover:bg-gray-100 px-2 py-2 rounded text-left group
+          ${isSelected ? 'bg-blue-50' : ''}`}
+      >
+        <div className="flex items-center w-full min-w-0">
+          <div className="flex-shrink-0 flex items-center">
+            {hasSubfolders && (
+              <span className="w-4 h-4 mr-2 text-gray-400 group-hover:text-gray-600">
+                {isExpanded ? (
+                  <IconChevronDown className="w-4 h-4" />
+                ) : (
+                  <IconChevronRight className="w-4 h-4" />
+                )}
+              </span>
+            )}
+            <span className="w-4 h-4 mr-2">
+              {hasSubfolders ? (
+                <IconFolder className="w-4 h-4 text-gray-400" />
+              ) : (
+                <IconFileAnalytics className="w-4 h-4 text-gray-400" />
+              )}
+            </span>
+          </div>
+          <span className={`text-gray-700 font-medium truncate flex-1
+            ${isSelected ? 'text-blue-600' : ''}`}
+          >
+            /{name}
+          </span>
+        </div>
+      </button>
+      
+      {/* Render subfolders if expanded */}
+      {isExpanded && hasSubfolders && (
+        <div className="ml-4 mt-1 border-l border-gray-200 pl-2">
+          {Object.entries(structure)
+            .filter(([, value]) => value !== null)
+            .map(([subName, subStructure]) => (
+              <FolderItem
+                key={subName}
+                name={subName}
+                path={`${path}/${subName}`}
+                structure={subStructure as ReportStructure}
+                isSelected={false}
+                onSelect={onSelect}
+                expandedFolders={expandedFolders}
+                onToggleExpand={onToggleExpand}
+              />
+            ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+interface FileTreeProps {
   structure: ReportStructure;
   basePath: string;
   onFolderSelect: (path: string) => void;
@@ -25,113 +112,23 @@ export default function FileTree({
 }: FileTreeProps) {
   const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set());
 
-  const toggleFolder = (folder: string, isExpanding: boolean, hasSubfolders: boolean) => {
-    const folderPath = `${basePath}/${folder}`;
-    
-    // Only select the folder if it's not already selected
-    if (folderPath !== selectedFolder) {
-      onFolderSelect(folderPath);
-    }
-
-    // Only handle expansion for folders with subfolders
-    if (hasSubfolders) {
-      const newExpanded = new Set(expandedFolders);
-      if (!isExpanding) {
-        newExpanded.delete(folder);
+  const handleToggleExpand = (path: string) => {
+    setExpandedFolders(prev => {
+      const next = new Set(prev);
+      if (next.has(path)) {
+        next.delete(path);
       } else {
-        newExpanded.add(folder);
+        next.add(path);
       }
-      setExpandedFolders(newExpanded);
-    }
-  };
-
-  const handleRootClick = () => {
-    // Only select root if it's not already selected
-    if (basePath !== selectedFolder) {
-      onFolderSelect(basePath);
-    }
-  };
-
-  const isSelected = (path: string): boolean => {
-    const fullPath = `${basePath}/${path}`;
-    return fullPath === selectedFolder;
-  };
-
-  const hasSubfolders = (struct: ReportStructure | null): boolean => {
-    if (!struct) return false;
-    return Object.values(struct).some(value => value !== null);
-  };
-
-  const renderNodeContent = (node: ReportStructure, currentPath: string = '') => {
-    const entries = Object.entries(node)
-      .filter(([, value]) => showOnlyFolders ? value !== null : true);
-      
-    if (entries.length === 0) return null;
-    
-    return entries.map(([name, subStructure]) => {
-      const path = currentPath ? `${currentPath}/${name}` : name;
-      const isFolder = subStructure !== null;
-      const isExpanded = expandedFolders.has(path);
-      const isPathSelected = isSelected(path);
-      const containsSubfolders = hasSubfolders(subStructure);
-
-      if (!isFolder && showOnlyFolders) return null;
-
-      return (
-        <div key={path} className="select-none">
-          <button
-            onClick={() => isFolder && toggleFolder(path, !isExpanded, containsSubfolders)}
-            className={`flex items-center w-full hover:bg-gray-100 px-2 py-2 rounded text-left group
-              ${isPathSelected ? 'bg-blue-50' : ''}`}
-          >
-            <div className="flex items-center w-full min-w-0">
-              <div className="flex-shrink-0 flex items-center">
-                {isFolder && containsSubfolders && (
-                  <span className="w-4 h-4 mr-2 text-gray-400 group-hover:text-gray-600">
-                    {isExpanded ? (
-                      <IconChevronDown className="w-4 h-4" />
-                    ) : (
-                      <IconChevronRight className="w-4 h-4" />
-                    )}
-                  </span>
-                )}
-                {isFolder ? (
-                  containsSubfolders ? (
-                    <span className="w-4 h-4 mr-2">
-                      <IconFolder className="w-4 h-4 text-gray-400" />
-                    </span>
-                  ) : (
-                    <span className="w-4 h-4 mr-2">
-                      <IconFileAnalytics className="w-4 h-4 text-gray-400" />
-                    </span>
-                  )
-                ) : (
-                  <span className="w-4 h-4 mr-2">
-                    <IconFileAnalytics className="w-4 h-4 text-gray-400" />
-                  </span>
-                )}
-              </div>
-              <span className={`text-gray-700 font-medium truncate flex-1
-                ${isPathSelected ? 'text-blue-600' : ''}`}
-              >
-                /{name}
-              </span>
-            </div>
-          </button>
-          {isFolder && isExpanded && (
-            <div className="ml-4 mt-1 border-l border-gray-200 pl-2">
-              {renderNodeContent(subStructure, path)}
-            </div>
-          )}
-        </div>
-      );
+      return next;
     });
   };
 
   return (
     <div className="text-sm space-y-2">
+      {/* Root folder */}
       <button
-        onClick={handleRootClick}
+        onClick={() => onFolderSelect(basePath)}
         className={`flex items-center w-full hover:bg-gray-100 px-2 py-2 rounded text-left group
           ${selectedFolder === basePath ? 'bg-blue-50' : ''}`}
       >
@@ -148,7 +145,22 @@ export default function FileTree({
           </span>
         </div>
       </button>
-      {renderNodeContent(structure, '')}
+
+      {/* Folder structure */}
+      {Object.entries(structure)
+        .filter(([, value]) => showOnlyFolders ? value !== null : true)
+        .map(([name, subStructure]) => (
+          <FolderItem
+            key={name}
+            name={name}
+            path={`${basePath}/${name}`}
+            structure={subStructure as ReportStructure}
+            isSelected={`${basePath}/${name}` === selectedFolder}
+            onSelect={onFolderSelect}
+            expandedFolders={expandedFolders}
+            onToggleExpand={handleToggleExpand}
+          />
+        ))}
     </div>
   );
 }

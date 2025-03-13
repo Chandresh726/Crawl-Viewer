@@ -1,116 +1,20 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import FileTree from '@/app/components/FileTree';
-import ReportDataViewer from '@/app/components/ReportViewer';
+import { IconLoader2, IconAlertCircle, IconFileAnalytics } from '@tabler/icons-react';
 import { ReportStructure } from '@/app/types/report';
-import { IconLoader2, IconAlertCircle, IconLogout, IconFileAnalytics, IconSpider } from '@tabler/icons-react';
-
-const ResizableDivider = ({ onResize }: { onResize: (width: number) => void }) => {
-  const dividerRef = useRef<HTMLDivElement>(null);
-  const isDragging = useRef(false);
-  const startX = useRef(0);
-  const startWidth = useRef(0);
-
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!isDragging.current) return;
-      
-      const delta = e.clientX - startX.current;
-      const newWidth = startWidth.current + delta;
-      
-      // Constrain between 200px and 600px
-      if (newWidth >= 300 && newWidth <= 600) {
-        onResize(newWidth);
-      }
-    };
-
-    const handleMouseUp = () => {
-      isDragging.current = false;
-      document.body.style.cursor = 'default';
-      document.body.style.userSelect = 'auto';
-    };
-
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
-
-    return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
-    };
-  }, [onResize]);
-
-  const handleMouseDown = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    isDragging.current = true;
-    startX.current = e.clientX;
-    // Get the width of the sidebar element
-    const sidebarElement = dividerRef.current?.previousElementSibling;
-    startWidth.current = sidebarElement?.getBoundingClientRect().width || 320;
-    document.body.style.cursor = 'col-resize';
-    document.body.style.userSelect = 'none';
-  };
-
-  return (
-    <div
-      ref={dividerRef}
-      className="w-1 hover:bg-blue-400 bg-gray-200 cursor-col-resize transition-colors h-[calc(100vh-4rem)]"
-      onMouseDown={handleMouseDown}
-    />
-  );
-};
-
-interface FileContent {
-  url: string;
-  metadata: {
-    title?: string;
-    description?: string;
-    keywords?: string;
-  };
-  internalLinks: string[];
-  externalLinks: string[];
-  cookies: Array<{
-    name: string;
-    value: string;
-    domain: string;
-    path: string;
-    secure: boolean;
-    httpOnly: boolean;
-    sameSite?: string;
-  }>;
-  localStorage: Record<string, string>;
-  sessionStorage: Record<string, string>;
-  forms: Array<{
-    action?: string;
-    method?: string;
-    inputs: Array<{
-      name?: string;
-      id?: string;
-      type?: string;
-      value?: string;
-      required?: boolean;
-    }>;
-  }>;
-  apiCalls: Array<{
-    url: string;
-    method: string;
-    headers: Record<string, string>;
-    response: {
-      status: number;
-      headers: Record<string, string>;
-      body: unknown;
-    };
-  }>;
-}
+import Header from '@/app/components/Header';
+import Sidebar from '@/app/components/Sidebar';
+import ResizableDivider from '@/app/components/ResizableDivider';
+import ReportDataViewer from '@/app/components/ReportViewer';
 
 export default function ReportPage() {
   const params = useParams();
   const router = useRouter();
   const [reportStructure, setReportStructure] = useState<ReportStructure | null>(null);
   const [selectedFolder, setSelectedFolder] = useState<string | null>(null);
-  const [fileContent, setFileContent] = useState<FileContent | null>(null);
+  const [fileContent, setFileContent] = useState<any | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isFileLoading, setIsFileLoading] = useState(false);
@@ -176,10 +80,6 @@ export default function ReportPage() {
     }
   }, [project, reportId, reportStructure, basePath]);
 
-  const handleFolderSelect = async (path: string) => {
-    await loadFolderResult(path);
-  };
-
   if (error) {
     return (
       <div className="flex items-center justify-center h-screen bg-gray-50">
@@ -199,60 +99,20 @@ export default function ReportPage() {
 
   return (
     <div className="flex h-screen bg-gray-100">
-      {/* Header */}
-      <div className="fixed top-0 left-0 right-0 bg-white shadow-md z-10 h-14">
-        <div className="h-full flex items-center space-x-6 px-4">
-          <IconSpider className="w-10 h-10 text-red-500" />
-          <div className="flex items-center text-lg">
-            <span className="text-gray-900 font-medium">Application:</span>
-            <span className="text-gray-600 ml-2">{project}</span>
-          </div>
-          <div className="h-4 w-px bg-gray-300" />
-          <div className="flex items-center text-lg">
-            <span className="text-gray-900 font-medium">Report:</span>
-            <span className="text-gray-600 ml-2">{reportId}</span>
-          </div>
-          <div className="flex-1" />
-          <button
-            onClick={() => router.push('/')}
-            className="flex items-center space-x-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-          >
-            <IconLogout className="w-5 h-5" />
-            <span>Close</span>
-          </button>
-        </div>
-      </div>
+      <Header project={project} reportId={reportId} />
 
-      {/* Main Content */}
       <div className="flex w-full mt-16">
-        {/* Sidebar */}
-        <div style={{ width: sidebarWidth }} className="flex-shrink-0">
-          <div className="bg-white border-r border-gray-200 h-[calc(100vh-4rem)] flex flex-col">
-            <div className="p-4 border-b border-gray-200">
-              <h2 className="text-lg font-semibold text-gray-900">Extracted Resources Paths</h2>
-            </div>
-            <div className="flex-1 overflow-auto p-4">
-              {isLoading ? (
-                <div className="flex items-center justify-center h-32">
-                  <IconLoader2 className="w-6 h-6 animate-spin text-blue-600" />
-                </div>
-              ) : reportStructure && (
-                <FileTree
-                  structure={reportStructure}
-                  basePath={basePath}
-                  onFolderSelect={handleFolderSelect}
-                  selectedFolder={selectedFolder}
-                  showOnlyFolders={true}
-                />
-              )}
-            </div>
-          </div>
-        </div>
+        <Sidebar
+          width={sidebarWidth}
+          isLoading={isLoading}
+          reportStructure={reportStructure}
+          basePath={basePath}
+          selectedFolder={selectedFolder}
+          onFolderSelect={loadFolderResult}
+        />
 
-        {/* Resizable Divider */}
         <ResizableDivider onResize={setSidebarWidth} />
 
-        {/* Content Area */}
         <div className="flex-1 overflow-auto h-[calc(100vh-4rem)] bg-white">
           {isFileLoading ? (
             <div className="flex items-center justify-center h-full">
