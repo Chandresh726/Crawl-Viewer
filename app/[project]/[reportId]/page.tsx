@@ -166,7 +166,7 @@ export default function ReportPage() {
         setReportStructure(data);
         // Load root directory report by default
         loadFolderResult(basePath);
-      } catch (err) {
+      } catch {
         setError('Failed to load report structure. Please try again.');
         setReportStructure(null);
       } finally {
@@ -273,8 +273,8 @@ export default function ReportPage() {
                   <h3 className="text-lg font-medium text-gray-900 mb-1">
                     No Results Found
                   </h3>
-                  <p className="text-gray-500">
-                    This folder doesn't have any results to display
+                  <p className="text-sm text-gray-500">
+                    This folder doesn&apos;t have any results to display
                   </p>
                 </div>
               )}

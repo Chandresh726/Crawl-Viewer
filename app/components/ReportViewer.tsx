@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { IconExternalLink, IconLink, IconX, IconCopy, IconCheck, IconChevronUp, IconChevronDown } from '@tabler/icons-react';
+import { IconX, IconCopy, IconCheck, IconChevronUp, IconChevronDown } from '@tabler/icons-react';
 import { motion } from 'framer-motion';
 import JsonViewer from './JsonViewer';
 

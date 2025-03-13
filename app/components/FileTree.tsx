@@ -24,7 +24,6 @@ export default function FileTree({
   showOnlyFolders = true
 }: FileTreeProps) {
   const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set());
-  const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
 
   const toggleFolder = (folder: string, isExpanding: boolean, hasSubfolders: boolean) => {
     const folderPath = `${basePath}/${folder}`;

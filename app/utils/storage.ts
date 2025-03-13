@@ -51,7 +51,7 @@ export async function fileExists(path: string): Promise<boolean> {
     try {
       await s3Client.send(command);
       return true;
-    } catch (error) {
+    } catch {
       console.error('File not found in S3:', s3Key);
       return false;
     }

@@ -1,8 +1,14 @@
 import { useState } from 'react';
 import { IconChevronRight, IconChevronDown } from '@tabler/icons-react';
 
+// Define strict types for JSON values
+type JsonPrimitive = string | number | boolean | null;
+type JsonArray = JsonValue[];
+type JsonObject = { [key: string]: JsonValue };
+type JsonValue = JsonPrimitive | JsonArray | JsonObject;
+
 interface JsonViewerProps {
-  data: any;
+  data: JsonValue;
   level?: number;
   expanded?: boolean;
   isRoot?: boolean;
@@ -12,7 +18,7 @@ const JsonViewer: React.FC<JsonViewerProps> = ({ data, level = 0, expanded = tru
   const [isExpanded, setIsExpanded] = useState(expanded);
   const indent = level * 16;
 
-  const getDataType = (value: any): string => {
+  const getDataType = (value: JsonValue): string => {
     if (Array.isArray(value)) return 'array';
     if (value === null) return 'null';
     return typeof value;
@@ -31,7 +37,7 @@ const JsonViewer: React.FC<JsonViewerProps> = ({ data, level = 0, expanded = tru
     return colors[type] || 'text-gray-900';
   };
 
-  const formatValue = (value: any): string => {
+  const formatValue = (value: JsonValue): string => {
     const type = getDataType(value);
     if (type === 'string') return `"${value}"`;
     if (type === 'null') return 'null';
@@ -41,11 +47,10 @@ const JsonViewer: React.FC<JsonViewerProps> = ({ data, level = 0, expanded = tru
 
   const renderCollapsible = (
     label: string,
-    value: any,
+    value: JsonValue,
     isArray: boolean = false
   ) => {
-    const type = getDataType(value);
-    const isEmpty = isArray ? value.length === 0 : Object.keys(value).length === 0;
+    const isEmpty = isArray ? (value as JsonArray).length === 0 : Object.keys(value as JsonObject).length === 0;
     const bracketColor = 'text-gray-500';
     
     if (isEmpty) {
@@ -81,7 +86,7 @@ const JsonViewer: React.FC<JsonViewerProps> = ({ data, level = 0, expanded = tru
           {!isExpanded && (
             <>
               <span className="text-gray-400 ml-1">
-                {isArray ? `${value.length} items` : `${Object.keys(value).length} properties`}
+                {isArray ? `${(value as JsonArray).length} items` : `${Object.keys(value as JsonObject).length} properties`}
               </span>
               <span className={bracketColor}>
                 {isArray ? ']' : '}'}
@@ -92,7 +97,7 @@ const JsonViewer: React.FC<JsonViewerProps> = ({ data, level = 0, expanded = tru
         {isExpanded && (
           <div className="border-l border-gray-200 ml-2">
             {isArray
-              ? value.map((item: any, index: number) => (
+              ? (value as JsonArray).map((item: JsonValue, index: number) => (
                   <div key={index}>
                     {typeof item === 'object' && item !== null ? (
                       <JsonViewer
@@ -113,7 +118,7 @@ const JsonViewer: React.FC<JsonViewerProps> = ({ data, level = 0, expanded = tru
                     )}
                   </div>
                 ))
-              : Object.entries(value).map(([key, val]) => (
+              : Object.entries(value as JsonObject).map(([key, val]: [string, JsonValue]) => (
                   <div key={key}>
                     {typeof val === 'object' && val !== null ? (
                       <JsonViewer
@@ -209,4 +214,4 @@ const JsonViewer: React.FC<JsonViewerProps> = ({ data, level = 0, expanded = tru
   );
 };
 
-export default JsonViewer; 
+export default JsonViewer;
