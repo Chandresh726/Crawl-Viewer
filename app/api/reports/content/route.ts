@@ -49,15 +49,15 @@ export async function GET(request: NextRequest) {
       const jsonContent = JSON.parse(content);
       console.log('Successfully retrieved report content');
       return NextResponse.json(jsonContent);
-    } catch (error) {
-      console.log('Failed to parse report content');
+    } catch (error: unknown) {
+      console.log('Failed to parse report content:', error instanceof Error ? error.message : error);
       return NextResponse.json(
         { error: 'Invalid report format' },
         { status: 422 }
       );
     }
-  } catch (error) {
-    console.error('Internal server error while processing report request');
+  } catch (error: unknown) {
+    console.error('Internal server error while processing report request:', error instanceof Error ? error.message : error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

@@ -40,7 +40,7 @@ export async function GET(
     console.log(`Found ${files.length} files in report`);
 
     const structure = buildStructureFromPaths(files);
-    
+
     if (Object.keys(structure).length === 0) {
       console.log('No valid files found in report structure');
       return NextResponse.json(
@@ -51,8 +51,8 @@ export async function GET(
 
     console.log('Successfully built report structure');
     return NextResponse.json(structure);
-  } catch (error) {
-    console.error('Failed to build report structure');
+  } catch (error: unknown) {
+    console.error('Failed to build report structure:', error instanceof Error ? error.message : error);
     return NextResponse.json(
       { error: 'Failed to process report structure' },
       { status: 500 }
