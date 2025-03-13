@@ -416,7 +416,7 @@ const FormsSection = ({ forms }: { forms: Form[] }) => {
                 {form.method || 'GET'}
               </span>
             </div>
-            {form.inputs?.length > 0 && (
+            {Array.isArray(form.inputs) && form.inputs.length > 0 && (
               <div className="mt-4">
                 <h4 className="text-sm font-medium text-gray-700 mb-3">
                   Form Fields ({form.inputs.length})
@@ -478,7 +478,7 @@ const ApiCallCard = ({ call }: { call: ApiCall }) => {
   const [expanded, setExpanded] = useState(false);
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const { domain, path, params } = parseUrl(call.url);
-  const statusColor = call.response?.status < 300 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800';
+  const statusColor = (call.response?.status ?? 500) < 300 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800';
   const methodColor: { [key: string]: string } = {
     GET: 'bg-blue-100 text-blue-800',
     POST: 'bg-purple-100 text-purple-800',
