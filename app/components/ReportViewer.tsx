@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { IconX, IconCopy, IconCheck, IconChevronUp, IconChevronDown } from '@tabler/icons-react';
 import { motion } from 'framer-motion';
-import JsonViewer from './JsonViewer';
+import JsonViewer, { JsonValue } from './JsonViewer';
 
 // Type definitions
 interface Metadata {
@@ -576,7 +576,7 @@ const ApiCallCard = ({ call }: { call: ApiCall }) => {
             </h4>
             <div className="bg-white p-4 border border-gray-200 text-xs">
               <div className="w-full">
-                <JsonViewer data={call.response?.body || {}} />
+                <JsonViewer data={(call.response?.body as JsonValue) ?? {}} />
               </div>
             </div>
           </div>

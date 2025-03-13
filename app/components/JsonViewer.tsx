@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { IconChevronRight, IconChevronDown } from '@tabler/icons-react';
 
 // Define strict types for JSON values
-type JsonPrimitive = string | number | boolean | null;
-type JsonArray = JsonValue[];
-type JsonObject = { [key: string]: JsonValue };
-type JsonValue = JsonPrimitive | JsonArray | JsonObject;
+export type JsonPrimitive = string | number | boolean | null;
+export type JsonArray = JsonValue[];
+export type JsonObject = { [key: string]: JsonValue };
+export type JsonValue = JsonPrimitive | JsonArray | JsonObject;
 
 interface JsonViewerProps {
   data: JsonValue;
