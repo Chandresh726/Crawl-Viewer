@@ -379,11 +379,11 @@ const CookiesSection = ({ cookies }: { cookies: Cookie[] }) => {
 };
 
 const FormsSection = ({ forms }: { forms: Form[] }) => {
-  if (!forms?.length) return null;
-
   const [formLimits, setFormLimits] = useState<{ [key: number]: number }>(
-    Object.fromEntries(forms.map((_, i) => [i, 5]))
+    Object.fromEntries((forms || []).map((_, i) => [i, 5]))
   );
+
+  if (!forms?.length) return null;
 
   const handleShowMore = (formIndex: number) => {
     setFormLimits(prev => ({
