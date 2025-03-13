@@ -7,13 +7,16 @@ function buildStructureFromPaths(paths: string[]): ReportStructure {
 
   for (const path of paths) {
     let current = structure;
-    const parts = path.split('/');
+    // Split by either forward slash or backslash
+    const parts = path.split(/[\\/]/);
 
     for (let i = 0; i < parts.length; i++) {
       const part = parts[i];
       if (i === parts.length - 1) {
-        // It's a file
-        current[part] = null;
+        // Only add if it's result.json
+        if (part === 'result.json') {
+          current[part] = null;
+        }
       } else {
         // It's a directory
         if (!current[part]) {

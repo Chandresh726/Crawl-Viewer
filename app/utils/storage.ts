@@ -157,7 +157,13 @@ export async function listItemsRecursively(prefix: string = ''): Promise<string[
           const subItems = await listItemsRecursively(join(prefix, file.name));
           items.push(...subItems);
         } else {
-          items.push(join(prefix, file.name));
+          // Don't include the project and report-id in the path
+          const path = join(prefix, file.name);
+          const pathParts = path.split(/[\\/]/);
+          const relativePath = pathParts.slice(2).join('/'); // Only remove project and report-id
+          if (relativePath) {
+            items.push(relativePath);
+          }
         }
       }
       
