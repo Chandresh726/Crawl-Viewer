@@ -117,9 +117,6 @@ export default function ReportPage() {
   const [sidebarWidth, setSidebarWidth] = useState(320);
 
   const { project, reportId } = params as { project: string; reportId: string };
-  const formattedReportId = typeof reportId === 'string' && reportId.startsWith('report-') 
-    ? reportId 
-    : `report-${reportId}`;
   const basePath = `${project}/${reportId}`;
 
   const loadFolderResult = async (folderPath: string) => {
