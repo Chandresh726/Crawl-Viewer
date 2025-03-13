@@ -3,7 +3,7 @@ export type ReportStructure = {
 };
 
 export type FileContent = {
-  [key: string]: any;
+  [key: string]: string | number | boolean | object | null;
 };
 
 export type TreeNode = {
@@ -12,4 +12,4 @@ export type TreeNode = {
   isFolder: boolean;
   isOpen?: boolean;
   children?: TreeNode[];
-}; 
+};

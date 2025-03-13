@@ -28,9 +28,9 @@ export async function readFile(path: string): Promise<string> {
       const content = await response.Body?.transformToString();
       if (!content) throw new Error('Empty content');
       return content;
-    } catch (error) {
-      console.error('Error reading S3 file:', error);
-      throw error;
+    } catch (err) {
+      console.error('Error reading S3 file:', err);
+      throw err;
     }
   } else {
     const fullPath = join(process.cwd(), '..', 'crawl-reports', path);

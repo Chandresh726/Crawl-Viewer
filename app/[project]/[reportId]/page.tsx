@@ -62,12 +62,55 @@ const ResizableDivider = ({ onResize }: { onResize: (width: number) => void }) =
   );
 };
 
+interface FileContent {
+  url: string;
+  metadata: {
+    title?: string;
+    description?: string;
+    keywords?: string;
+  };
+  internalLinks: string[];
+  externalLinks: string[];
+  cookies: Array<{
+    name: string;
+    value: string;
+    domain: string;
+    path: string;
+    secure: boolean;
+    httpOnly: boolean;
+    sameSite?: string;
+  }>;
+  localStorage: Record<string, string>;
+  sessionStorage: Record<string, string>;
+  forms: Array<{
+    action?: string;
+    method?: string;
+    inputs: Array<{
+      name?: string;
+      id?: string;
+      type?: string;
+      value?: string;
+      required?: boolean;
+    }>;
+  }>;
+  apiCalls: Array<{
+    url: string;
+    method: string;
+    headers: Record<string, string>;
+    response: {
+      status: number;
+      headers: Record<string, string>;
+      body: unknown;
+    };
+  }>;
+}
+
 export default function ReportPage() {
   const params = useParams();
   const router = useRouter();
   const [reportStructure, setReportStructure] = useState<ReportStructure | null>(null);
   const [selectedFolder, setSelectedFolder] = useState<string | null>(null);
-  const [fileContent, setFileContent] = useState<any>(null);
+  const [fileContent, setFileContent] = useState<FileContent | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isFileLoading, setIsFileLoading] = useState(false);
@@ -95,7 +138,7 @@ export default function ReportPage() {
       
       setFileContent(data);
       setSelectedFolder(folderPath);
-    } catch (error) {
+    } catch {
       setFileContent(null);
       setSelectedFolder(folderPath);
     } finally {
@@ -123,7 +166,7 @@ export default function ReportPage() {
         setReportStructure(data);
         // Load root directory report by default
         loadFolderResult(basePath);
-      } catch (error) {
+      } catch (err) {
         setError('Failed to load report structure. Please try again.');
         setReportStructure(null);
       } finally {
@@ -145,7 +188,7 @@ export default function ReportPage() {
       <div className="flex items-center justify-center h-screen bg-gray-50">
         <div className="text-center p-8 bg-white rounded-xl shadow-lg max-w-md w-full mx-4">
           <IconAlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
-          <h1 className="text-xl text-red-600 mb-4">{error}</h1>
+          <h1 className="text-xl text-red-600 mb-4">Failed to load report structure. Please try again.</h1>
           <button
             onClick={() => router.push('/')}
             className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
@@ -245,4 +288,4 @@ export default function ReportPage() {
       </div>
     </div>
   );
-} 
+}

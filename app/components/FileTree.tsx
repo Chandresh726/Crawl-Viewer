@@ -5,8 +5,7 @@ import {
   IconChevronDown,
   IconFolder, 
   IconFolderFilled,
-  IconFileAnalytics,
-  IconHome
+  IconFileAnalytics
 } from '@tabler/icons-react';
 
 export interface FileTreeProps {
@@ -25,6 +24,7 @@ export default function FileTree({
   showOnlyFolders = true
 }: FileTreeProps) {
   const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set());
+  const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
 
   const toggleFolder = (folder: string, isExpanding: boolean, hasSubfolders: boolean) => {
     const folderPath = `${basePath}/${folder}`;
@@ -63,12 +63,12 @@ export default function FileTree({
     return Object.values(struct).some(value => value !== null);
   };
 
-  const renderTree = (struct: ReportStructure, currentPath: string) => {
-    const entries = Object.entries(struct)
-      .filter(([_, value]) => showOnlyFolders ? value !== null : true);
-
+  const renderNodeContent = (node: ReportStructure, currentPath: string = '') => {
+    const entries = Object.entries(node)
+      .filter(([, value]) => showOnlyFolders ? value !== null : true);
+      
     if (entries.length === 0) return null;
-
+    
     return entries.map(([name, subStructure]) => {
       const path = currentPath ? `${currentPath}/${name}` : name;
       const isFolder = subStructure !== null;
@@ -121,7 +121,7 @@ export default function FileTree({
           </button>
           {isFolder && isExpanded && (
             <div className="ml-4 mt-1 border-l border-gray-200 pl-2">
-              {renderTree(subStructure, path)}
+              {renderNodeContent(subStructure, path)}
             </div>
           )}
         </div>
@@ -149,7 +149,7 @@ export default function FileTree({
           </span>
         </div>
       </button>
-      {renderTree(structure, '')}
+      {renderNodeContent(structure, '')}
     </div>
   );
-} 
+}
