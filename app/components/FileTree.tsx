@@ -7,6 +7,7 @@ import {
   IconFolderFilled,
   IconFileAnalytics
 } from '@tabler/icons-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface FolderItemProps {
   name: string;
@@ -75,28 +76,36 @@ function FolderItem({
       </button>
       
       {/* Render subfolders if expanded */}
-      {isExpanded && hasSubfolders && (
-        <div className="ml-4 mt-1 border-l border-gray-200 pl-2">
-          {Object.entries(structure)
-            .filter(([, value]) => value !== null)
-            .map(([subName, subStructure]) => {
-              const subPath = `${path}/${subName}`;
-              return (
-                <FolderItem
-                  key={subName}
-                  name={subName}
-                  path={subPath}
-                  structure={subStructure as ReportStructure}
-                  isSelected={subPath === selectedFolder}
-                  onSelect={onSelect}
-                  expandedFolders={expandedFolders}
-                  onToggleExpand={onToggleExpand}
-                  selectedFolder={selectedFolder}
-                />
-              );
-            })}
-        </div>
-      )}
+      <AnimatePresence>
+        {isExpanded && hasSubfolders && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="ml-4 mt-1 border-l border-gray-200 pl-2"
+          >
+            {Object.entries(structure)
+              .filter(([, value]) => value !== null)
+              .map(([subName, subStructure]) => {
+                const subPath = `${path}/${subName}`;
+                return (
+                  <FolderItem
+                    key={subName}
+                    name={subName}
+                    path={subPath}
+                    structure={subStructure as ReportStructure}
+                    isSelected={subPath === selectedFolder}
+                    onSelect={onSelect}
+                    expandedFolders={expandedFolders}
+                    onToggleExpand={onToggleExpand}
+                    selectedFolder={selectedFolder}
+                  />
+                );
+              })}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

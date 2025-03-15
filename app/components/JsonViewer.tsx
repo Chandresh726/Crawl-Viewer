@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { IconChevronRight, IconChevronDown } from '@tabler/icons-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 // Define strict types for JSON values
 export type JsonPrimitive = string | number | boolean | null;
@@ -66,9 +67,14 @@ const JsonViewer: React.FC<JsonViewerProps> = ({ data, level = 0, expanded = tru
     }
 
     return (
-      <div style={{ marginLeft: `${indent}px` }}>
-        <div
-          className="flex items-center py-1 cursor-pointer select-none group"
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        style={{ marginLeft: `${indent}px` }}
+      >
+        <motion.div
+          whileHover={{ backgroundColor: 'rgba(0,0,0,0.02)' }}
+          className="flex items-center py-1 cursor-pointer select-none group rounded-lg px-1"
           onClick={() => setIsExpanded(!isExpanded)}
         >
           <span className="w-4 h-4 mr-1 flex items-center justify-center text-gray-400 group-hover:text-gray-600">
@@ -93,60 +99,68 @@ const JsonViewer: React.FC<JsonViewerProps> = ({ data, level = 0, expanded = tru
               </span>
             </>
           )}
-        </div>
-        {isExpanded && (
-          <div className="border-l border-gray-200 ml-2">
-            {isArray
-              ? (value as JsonArray).map((item: JsonValue, index: number) => (
-                  <div key={index}>
-                    {typeof item === 'object' && item !== null ? (
-                      <JsonViewer
-                        data={item}
-                        level={level + 1}
-                        expanded={true}
-                        isRoot={false}
-                      />
-                    ) : (
-                      <div
-                        style={{ marginLeft: `${indent + 16}px` }}
-                        className="py-1"
-                      >
-                        <span className={getTypeColor(getDataType(item))}>
-                          {formatValue(item)}
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                ))
-              : Object.entries(value as JsonObject).map(([key, val]: [string, JsonValue]) => (
-                  <div key={key}>
-                    {typeof val === 'object' && val !== null ? (
-                      <JsonViewer
-                        data={{ [key]: val }}
-                        level={level + 1}
-                        expanded={true}
-                        isRoot={false}
-                      />
-                    ) : (
-                      <div
-                        style={{ marginLeft: `${indent + 16}px` }}
-                        className="py-1"
-                      >
-                        <span className="text-gray-700">{key}</span>
-                        <span className={`${bracketColor}`}>: </span>
-                        <span className={getTypeColor(getDataType(val))}>
-                          {formatValue(val)}
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                ))}
-            <div style={{ marginLeft: `${indent}px` }} className={bracketColor}>
-              {isArray ? ']' : '}'}
-            </div>
-          </div>
-        )}
-      </div>
+        </motion.div>
+        <AnimatePresence>
+          {isExpanded && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="border-l border-gray-200 ml-2"
+            >
+              {isArray
+                ? (value as JsonArray).map((item: JsonValue, index: number) => (
+                    <div key={index}>
+                      {typeof item === 'object' && item !== null ? (
+                        <JsonViewer
+                          data={item}
+                          level={level + 1}
+                          expanded={true}
+                          isRoot={false}
+                        />
+                      ) : (
+                        <div
+                          style={{ marginLeft: `${indent + 16}px` }}
+                          className="py-1"
+                        >
+                          <span className={getTypeColor(getDataType(item))}>
+                            {formatValue(item)}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  ))
+                : Object.entries(value as JsonObject).map(([key, val]: [string, JsonValue]) => (
+                    <div key={key}>
+                      {typeof val === 'object' && val !== null ? (
+                        <JsonViewer
+                          data={{ [key]: val }}
+                          level={level + 1}
+                          expanded={true}
+                          isRoot={false}
+                        />
+                      ) : (
+                        <div
+                          style={{ marginLeft: `${indent + 16}px` }}
+                          className="py-1"
+                        >
+                          <span className="text-gray-700">{key}</span>
+                          <span className={`${bracketColor}`}>: </span>
+                          <span className={getTypeColor(getDataType(val))}>
+                            {formatValue(val)}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+              <div style={{ marginLeft: `${indent}px` }} className={bracketColor}>
+                {isArray ? ']' : '}'}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
     );
   };
 

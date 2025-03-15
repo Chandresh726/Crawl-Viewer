@@ -3,6 +3,7 @@ import { IconChevronUp, IconChevronDown, IconCheck, IconCopy } from '@tabler/ico
 import { ApiCall } from '@/app/types/report';
 import { parseUrl } from '@/app/utils/url';
 import JsonViewer, { JsonValue } from '@/app/components/JsonViewer';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface ApiCallCardProps {
   call: ApiCall;
@@ -29,13 +30,18 @@ export default function ApiCallCard({ call }: ApiCallCardProps) {
   };
 
   return (
-    <div className="bg-white shadow-sm border border-gray-200 overflow-hidden">
-      <div 
-        className="p-4 cursor-pointer hover:bg-gray-50 transition-colors flex justify-between items-center"
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="bg-white shadow-sm border border-gray-200 overflow-hidden rounded-2xl"
+    >
+      <motion.div 
+        whileHover={{ backgroundColor: 'rgba(0,0,0,0.02)' }}
+        className="p-4 cursor-pointer transition-colors flex justify-between items-center"
         onClick={() => setExpanded(!expanded)}
       >
         <div className="flex items-center space-x-3">
-          <span className="ml-2">
+          <span className="hidden md:block ml-2">
             {expanded ? <IconChevronUp className="w-5 h-5 text-gray-600" /> : <IconChevronDown className="w-5 h-5 text-gray-600" />}
           </span>
           <span className={`px-2.5 py-0.5 rounded-full text-sm font-medium ${methodColorClass}`}>
@@ -48,81 +54,89 @@ export default function ApiCallCard({ call }: ApiCallCardProps) {
         <span className={`px-2.5 py-0.5 rounded-full text-md font-medium ${statusColor}`}>
           {call.response?.status || 'N/A'}
         </span>
-      </div>
+      </motion.div>
 
-      {expanded && (
-        <div className="border-t border-gray-200 divide-y divide-gray-200">
-          {/* Query String */}
-          {params && (
-            <div className="p-4 bg-gray-50">
-              <h4 className="text-sm font-medium text-gray-900 mb-2 flex justify-between items-center">
-                Query String
-                <button className="ml-2 text-blue-600 hover:underline text-xs cursor-pointer" onClick={() => handleCopy(params, 3)}>
-                  {copiedIndex === 3 ? <IconCheck className="w-4 h-4 text-green-600" /> : <IconCopy className="w-4 h-4 hover:text-blue-800" />}
-                </button>
-              </h4>
-              <div className="bg-white p-4 border border-gray-200 text-xs">
-                <span className="text-gray-900 break-all">{params}</span>
-              </div>
-            </div>
-          )}
-
-          {/* Request Headers */}
-          <div className="p-4 bg-gray-50">
-            <h4 className="text-sm font-medium text-gray-900 mb-2 flex justify-between items-center">
-              Request Headers
-              <button className="ml-2 text-blue-600 hover:underline text-xs cursor-pointer" onClick={() => handleCopy(JSON.stringify(call.headers), 0)}>
-                {copiedIndex === 0 ? <IconCheck className="w-4 h-4 text-green-600" /> : <IconCopy className="w-4 h-4 hover:text-blue-800" />}
-              </button>
-            </h4>
-            <div className="bg-white p-4 border border-gray-200 text-xs whitespace-pre-wrap break-all">
-              <div className="w-full space-y-1">
-                {Object.entries(call.headers).map(([key, value], idx) => (
-                  <div key={idx} className="flex items-start">
-                    <span className="font-medium text-gray-700 min-w-[120px] mr-2">{key}:</span>
-                    <span className="text-green-600 break-all">{value}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Response Headers and Body */}
-          {call.response && (
-            <>
+      <AnimatePresence>
+        {expanded && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="border-t border-gray-200 divide-y divide-gray-200 bg-white"
+          >
+            {/* Query String */}
+            {params && (
               <div className="p-4 bg-gray-50">
                 <h4 className="text-sm font-medium text-gray-900 mb-2 flex justify-between items-center">
-                  Response Headers
-                  <button className="ml-2 text-blue-600 hover:underline text-xs cursor-pointer" onClick={() => handleCopy(JSON.stringify(call.response?.headers ?? {}), 1)}>
-                    {copiedIndex === 1 ? <IconCheck className="w-4 h-4 text-green-600" /> : <IconCopy className="w-4 h-4 hover:text-blue-800" />}
-                  </button>
-                </h4>
-                <div className="bg-white p-4 border border-gray-200 text-xs whitespace-pre-wrap break-all">
-                  <div className="w-full space-y-1">
-                    {Object.entries(call.response.headers).map(([key, value], idx) => (
-                      <div key={idx} className="flex items-start">
-                        <span className="font-medium text-gray-700 min-w-[120px] mr-2">{key}:</span>
-                        <span className="text-green-600 break-all">{value}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-              <div className="p-4 bg-gray-50">
-                <h4 className="text-sm font-medium text-gray-900 mb-2 flex justify-between items-center">
-                  Response Body
-                  <button className="ml-2 text-blue-600 hover:underline text-xs cursor-pointer" onClick={() => handleCopy(JSON.stringify(call.response?.body || {}), 2)}>
-                    {copiedIndex === 2 ? <IconCheck className="w-4 h-4 text-green-600" /> : <IconCopy className="w-4 h-4 hover:text-blue-800" />}
+                  Query String
+                  <button className="ml-2 text-blue-600 hover:underline text-xs cursor-pointer" onClick={() => handleCopy(params, 3)}>
+                    {copiedIndex === 3 ? <IconCheck className="w-4 h-4 text-green-600" /> : <IconCopy className="w-4 h-4 hover:text-blue-800" />}
                   </button>
                 </h4>
                 <div className="bg-white p-4 border border-gray-200 text-xs">
-                  <JsonViewer data={(call.response?.body as JsonValue) ?? {}} />
+                  <span className="text-gray-900 break-all">{params}</span>
                 </div>
               </div>
-            </>
-          )}
-        </div>
-      )}
-    </div>
+            )}
+
+            {/* Request Headers */}
+            <div className="p-4 bg-gray-50">
+              <h4 className="text-sm font-medium text-gray-900 mb-2 flex justify-between items-center">
+                Request Headers
+                <button className="ml-2 text-blue-600 hover:underline text-xs cursor-pointer" onClick={() => handleCopy(JSON.stringify(call.headers), 0)}>
+                  {copiedIndex === 0 ? <IconCheck className="w-4 h-4 text-green-600" /> : <IconCopy className="w-4 h-4 hover:text-blue-800" />}
+                </button>
+              </h4>
+              <div className="bg-white p-4 border border-gray-200 text-xs whitespace-pre-wrap break-all">
+                <div className="w-full space-y-1">
+                  {Object.entries(call.headers).map(([key, value], idx) => (
+                    <div key={idx} className="flex items-start">
+                      <span className="font-medium text-gray-700 min-w-[120px] mr-2">{key}:</span>
+                      <span className="text-green-600 break-all">{value}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Response Headers and Body */}
+            {call.response && (
+              <>
+                <div className="p-4 bg-gray-50">
+                  <h4 className="text-sm font-medium text-gray-900 mb-2 flex justify-between items-center">
+                    Response Headers
+                    <button className="ml-2 text-blue-600 hover:underline text-xs cursor-pointer" onClick={() => handleCopy(JSON.stringify(call.response?.headers ?? {}), 1)}>
+                      {copiedIndex === 1 ? <IconCheck className="w-4 h-4 text-green-600" /> : <IconCopy className="w-4 h-4 hover:text-blue-800" />}
+                    </button>
+                  </h4>
+                  <div className="bg-white p-4 border border-gray-200 text-xs whitespace-pre-wrap break-all">
+                    <div className="w-full space-y-1">
+                      {Object.entries(call.response.headers).map(([key, value], idx) => (
+                        <div key={idx} className="flex items-start">
+                          <span className="font-medium text-gray-700 min-w-[120px] mr-2">{key}:</span>
+                          <span className="text-green-600 break-all">{value}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                <div className="p-4 bg-gray-50">
+                  <h4 className="text-sm font-medium text-gray-900 mb-2 flex justify-between items-center">
+                    Response Body
+                    <button className="ml-2 text-blue-600 hover:underline text-xs cursor-pointer" onClick={() => handleCopy(JSON.stringify(call.response?.body || {}), 2)}>
+                      {copiedIndex === 2 ? <IconCheck className="w-4 h-4 text-green-600" /> : <IconCopy className="w-4 h-4 hover:text-blue-800" />}
+                    </button>
+                  </h4>
+                  <div className="bg-white p-4 border border-gray-200 text-xs">
+                    <JsonViewer data={(call.response?.body as JsonValue) ?? {}} />
+                  </div>
+                </div>
+              </>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
 }

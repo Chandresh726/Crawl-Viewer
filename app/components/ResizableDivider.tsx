@@ -45,10 +45,11 @@ export default function ResizableDivider({ onResize }: ResizableDividerProps) {
     document.body.style.userSelect = 'none';
   };
 
+  // Only show on desktop
   return (
     <div
       ref={dividerRef}
-      className="w-1 hover:bg-blue-400 bg-gray-200 cursor-col-resize transition-colors h-[calc(100vh-4rem)]"
+      className="w-1 hover:bg-blue-400 bg-gray-200 cursor-col-resize transition-colors h-[calc(100vh-4rem)] hidden md:block"
       onMouseDown={handleMouseDown}
     />
   );

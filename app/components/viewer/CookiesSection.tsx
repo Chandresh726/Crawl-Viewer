@@ -27,9 +27,9 @@ export default function CookiesSection({ cookies }: CookiesSectionProps) {
           <div className="grid grid-cols-1 divide-y divide-gray-200">
             {cookies.slice(0, cookieLimit).map((cookie, i) => (
               <div key={i} className="p-4">
-                <div className="flex items-center justify-between mb-2">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2 gap-2">
                   <span className="font-medium text-gray-900">{cookie.name}</span>
-                  <div className="space-x-2">
+                  <div className="flex flex-wrap gap-2">
                     <span className={`px-2 py-1 rounded text-xs ${cookie.secure ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
                       {cookie.secure ? 'Secure' : 'Not Secure'}
                     </span>

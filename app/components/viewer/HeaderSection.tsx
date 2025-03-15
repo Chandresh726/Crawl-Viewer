@@ -12,10 +12,16 @@ export default function HeaderSection({ url, metadata }: HeaderSectionProps) {
 
   return (
     <div className="space-y-4 bg-white p-6 shadow-sm border border-gray-200">
-      <div className="flex justify-between items-center">
-        <div className="text-2xl text-gray-900">
-          <span className="font-bold">Domain: </span><span className="text-gray-700">{domain}</span>
-          <span className="ml-4 font-bold">Path: </span><span className="text-gray-700">{path}</span>
+      <div className="flex flex-col md:flex-row md:justify-between md:items-center">
+        <div className="text-2xl text-gray-900 flex flex-col md:flex-row md:items-center gap-2 md:gap-4">
+          <div>
+            <span className="font-bold">Domain: </span>
+            <span className="text-gray-700">{domain}</span>
+          </div>
+          <div>
+            <span className="font-bold">Path: </span>
+            <span className="text-gray-700">{path}</span>
+          </div>
         </div>
       </div>
       {params && (

@@ -14,8 +14,8 @@ export default function LinksSection({ links }: LinksSectionProps) {
 
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white p-6 shadow-sm border border-gray-200">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6">
+        <div className="bg-white p-4 md:p-6 shadow-sm border border-gray-200">
           <h3 className="text-lg font-semibold text-gray-900 mb-4 text-center">
             Internal Links ({links.internal.length})
           </h3>
@@ -30,7 +30,7 @@ export default function LinksSection({ links }: LinksSectionProps) {
             <p className="text-sm text-gray-500">No internal links available.</p>
           )}
         </div>
-        <div className="bg-white p-6 shadow-sm border border-gray-200">
+        <div className="bg-white p-4 md:p-6 shadow-sm border border-gray-200">
           <h3 className="text-lg font-semibold text-gray-900 mb-4 text-center">External Links ({links.external.length})</h3>
           <hr className="my-2" />
           {links.external.length > 0 ? (
