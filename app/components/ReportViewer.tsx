@@ -1,4 +1,5 @@
 import { ReportData } from '@/app/types/report';
+import { useState } from 'react';
 import {
   HeaderSection,
   LinksSection,
@@ -7,6 +8,7 @@ import {
   ApiCallsSection,
   StorageSection
 } from './viewer';
+import MetricsSection from './viewer/MetricsSection';
 import { motion } from 'framer-motion';
 
 interface ReportViewerProps {
@@ -41,6 +43,10 @@ export default function ReportViewer({ data }: ReportViewerProps) {
           <HeaderSection url={data.url} metadata={data.metadata} />
         </motion.div>
         
+        <motion.div variants={item}>
+          <MetricsSection data={data} />
+        </motion.div>
+
         <motion.div variants={item}>
           <LinksSection links={{ internal: data.internalLinks, external: data.externalLinks }} />
         </motion.div>

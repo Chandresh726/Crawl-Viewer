@@ -171,7 +171,7 @@ export default function ReportPage() {
                 {fileContent ? (
                   <ReportDataViewer data={fileContent} />
                 ) : (
-                  <div className="bg-white rounded-3xl shadow-xl p-12 text-center m-4 border border-gray-100">
+                  <div className="bg-white shadow-xl p-12 text-center m-4 border border-gray-100">
                     <motion.div 
                       initial={{ scale: 0.8 }}
                       animate={{ scale: 1 }}
