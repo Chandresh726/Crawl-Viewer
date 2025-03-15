@@ -1,5 +1,4 @@
 import { ReportData } from '@/app/types/report';
-import { useState } from 'react';
 import {
   HeaderSection,
   LinksSection,
@@ -32,7 +31,7 @@ export default function ReportViewer({ data }: ReportViewerProps) {
   };
 
   return (
-    <motion.div 
+    <motion.div
       className="min-h-screen bg-gray-50 p-4"
       variants={container}
       initial="hidden"
@@ -42,7 +41,7 @@ export default function ReportViewer({ data }: ReportViewerProps) {
         <motion.div variants={item}>
           <HeaderSection url={data.url} metadata={data.metadata} />
         </motion.div>
-        
+
         <motion.div variants={item}>
           <MetricsSection data={data} />
         </motion.div>
@@ -50,19 +49,19 @@ export default function ReportViewer({ data }: ReportViewerProps) {
         <motion.div variants={item}>
           <LinksSection links={{ internal: data.internalLinks, external: data.externalLinks }} />
         </motion.div>
-        
+
         <motion.div variants={item}>
           <CookiesSection cookies={data.cookies} />
         </motion.div>
-        
+
         <motion.div variants={item}>
           <ApiCallsSection calls={data.apiCalls} />
         </motion.div>
-        
+
         <motion.div variants={item}>
           <FormsSection forms={data.forms} />
         </motion.div>
-        
+
         <motion.div variants={item}>
           <StorageSection storage={{ localStorage: data.localStorage, sessionStorage: data.sessionStorage }} />
         </motion.div>

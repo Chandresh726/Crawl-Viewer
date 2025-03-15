@@ -1,4 +1,4 @@
-import { IconLoader2, IconMenu2, IconChevronLeft } from '@tabler/icons-react';
+import { IconLoader2 } from '@tabler/icons-react';
 import { motion } from 'framer-motion';
 import FileTree from './FileTree';
 import { ReportStructure } from '@/app/types/report';
