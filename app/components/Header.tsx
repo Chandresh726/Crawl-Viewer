@@ -28,16 +28,16 @@ export default function Header({ project, reportId, isMobileOpen, onMobileToggle
 
         <IconSpider className="w-8 h-8 md:w-10 md:h-10 text-red-500" />
         
-        <div className="flex flex-1 items-center space-x-2 md:space-x-6 min-w-0 text-sm md:text-base">
+        <div className="flex flex-1 items-center space-x-2 md:space-x-6 min-w-0 text-sm md:text-lg">
           <div className="flex items-center min-w-0">
-            <span className="text-gray-900 font-medium whitespace-nowrap">App:</span>
+            <span className="text-gray-900 font-medium whitespace-nowrap">Application :</span>
             <span className="text-gray-600 ml-1 truncate">{project}</span>
           </div>
 
           <div className="h-4 w-px bg-gray-300 hidden sm:block" />
 
           <div className="flex items-center min-w-0">
-            <span className="text-gray-900 font-medium whitespace-nowrap">ID:</span>
+            <span className="text-gray-900 font-medium whitespace-nowrap">Report :</span>
             <span className="text-gray-600 ml-1 truncate">{reportId}</span>
           </div>
         </div>

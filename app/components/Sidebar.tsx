@@ -37,9 +37,9 @@ export default function Sidebar({
         `}
       >
         <div className="bg-white border-r border-gray-200 h-[calc(100vh-4rem)] flex flex-col">
-          <div className="p-4 border-b border-gray-200">
+          {/* <div className="p-4 border-b border-gray-200">
             <h2 className="text-lg font-semibold text-gray-900">Extracted Resources Paths</h2>
-          </div>
+          </div> */}
           <div className="flex-1 overflow-auto p-4">
             {isLoading ? (
               <div className="flex items-center justify-center h-32">

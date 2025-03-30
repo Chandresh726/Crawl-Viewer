@@ -31,7 +31,6 @@ export default function MetricsSection({ data }: MetricsSectionProps) {
         { name: 'SessionStorage', value: Object.keys(data.sessionStorage || {}).length, color: '#f59e0b' }
     ];
 
-    // Updated formMetrics to include optional fields
     const formMetrics = {
         postForms: data.forms.filter(form => form.method?.toUpperCase() === 'POST').length,
         getForms: data.forms.filter(form => !form.method || form.method?.toUpperCase() === 'GET').length,
@@ -40,16 +39,16 @@ export default function MetricsSection({ data }: MetricsSectionProps) {
         ).length,
         requiredFields: data.forms.reduce((acc, form) =>
             acc + (form.inputs?.filter(input => input.required)?.length || 0)
-        , 0),
+            , 0),
         optionalFields: data.forms.reduce((acc, form) =>
             acc + (form.inputs?.filter(input => !input.required)?.length || 0)
-        , 0)
+            , 0)
     };
 
     return (
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-            <div className="bg-white border border-gray-200 p-4 shadow-sm">
-                <div className="text-xs text-gray-600 font-medium">Total Links</div>
+            <div className="standard-card">
+                <div className="text-sm standard-text-secondary font-bold">Total Links</div>
                 <div className="text-lg font-semibold text-gray-900 mt-1">{totalLinks}</div>
                 <div className="mt-2 h-1.5 bg-gray-100 overflow-hidden flex">
                     <div
@@ -73,8 +72,8 @@ export default function MetricsSection({ data }: MetricsSectionProps) {
                 </div>
             </div>
 
-            <div className="bg-white border border-gray-200 p-4 shadow-sm">
-                <div className="text-xs text-gray-600 font-medium">API Calls</div>
+            <div className="standard-card">
+                <div className="text-sm standard-text-secondary font-bold">API Calls</div>
                 <div className="flex items-center justify-between">
                     <div className="text-lg font-semibold text-gray-900 mt-1">{data.apiCalls.length}</div>
                     <div className="w-16 h-16">
@@ -115,8 +114,8 @@ export default function MetricsSection({ data }: MetricsSectionProps) {
                 )}
             </div>
 
-            <div className="bg-white border border-gray-200 p-4 shadow-sm">
-                <div className="text-xs text-gray-600 font-medium">Forms</div>
+            <div className="standard-card">
+                <div className="text-sm standard-text-secondary font-bold">Forms</div>
                 <div className="text-lg font-semibold text-gray-900 mt-1">{data.forms.length}</div>
                 <div className="mt-3 space-y-2">
                     <div className="flex justify-between text-xs text-gray-600 font-medium">
@@ -163,8 +162,8 @@ export default function MetricsSection({ data }: MetricsSectionProps) {
                 </div>
             </div>
 
-            <div className="bg-white border border-gray-200 p-4 shadow-sm">
-                <div className="text-xs text-gray-600 font-medium">Storage Items</div>
+            <div className="standard-card">
+                <div className="text-sm standard-text-secondary font-bold">Storage Items</div>
                 <div className="text-lg font-semibold text-gray-900 mt-1">{totalStorage}</div>
                 <div className="mt-3 space-y-2">
                     {storageData.map((item) => (

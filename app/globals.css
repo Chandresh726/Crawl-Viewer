@@ -24,3 +24,58 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+@tailwind utilities;
+
+@layer components {
+  /* Base Components */
+  .standard-card {
+    @apply bg-white border border-gray-200 shadow-sm p-4 md:p-6;
+  }
+
+  .standard-container {
+    @apply bg-white border border-gray-200 shadow-sm;
+  }
+
+  /* Text Styles */
+  .standard-text {
+    @apply text-gray-900;
+  }
+
+  .standard-text-secondary {
+    @apply text-gray-600;
+  }
+
+  /* Layout Components */
+  .standard-section {
+    @apply space-y-4 bg-white border border-gray-200 shadow-sm p-6;
+  }
+
+  .standard-grid {
+    @apply grid grid-cols-1 gap-4 md:gap-6;
+  }
+
+  /* Form Elements */
+  .standard-input {
+    @apply bg-white border border-gray-200 rounded-lg p-2;
+  }
+
+  .standard-button {
+    @apply text-blue-600 hover:text-blue-800 text-sm font-medium;
+  }
+
+  /* Headers */
+  .section-header {
+    @apply text-lg font-semibold text-gray-900 mb-4 text-center;
+  }
+
+  /* Lists */
+  .standard-list {
+    @apply divide-y divide-gray-200;
+  }
+
+  .list-item {
+    @apply p-4 hover:bg-gray-50;
+  }
+}
+

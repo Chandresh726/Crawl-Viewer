@@ -27,15 +27,15 @@ export default function FormsSection({ forms }: FormsSectionProps) {
   };
 
   return (
-    <div className="space-y-4 bg-white p-6 shadow-sm border border-gray-200">
-      <h2 className="text-xl font-semibold text-gray-800 text-center">Forms ({forms.length})</h2>
-      <div className="space-y-6">
+    <div className="standard-section">
+      <h2 className="section-header">Forms ({forms.length})</h2>
+      <div className="standard-grid">
         {forms.map((form, i) => (
-          <div key={i} className="bg-white rounded-sm p-6 shadow-sm border border-gray-200">
+          <div key={i} className="standard-card">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <span className="text-sm font-medium text-gray-500">Action:</span>
-                <span className="ml-2 text-gray-900">{form.action || 'Not specified'}</span>
+                <span className="standard-text-secondary">Action:</span>
+                <span className="standard-text ml-2">{form.action || 'Not specified'}</span>
               </div>
               <span className={`px-3 py-1 rounded-full text-sm font-medium ${
                 form.method === 'POST' ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800'

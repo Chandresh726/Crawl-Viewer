@@ -23,25 +23,23 @@ export default function StorageSection({ storage }: StorageSectionProps) {
   };
 
   return (
-    <div className="space-y-4">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <StorageData 
-          data={hasLocalStorage ? storage.localStorage : null} 
-          title="Local Storage" 
-          limit={localLimit} 
-          setLimit={setLocalLimit} 
-          onCopy={handleCopy} 
-          copiedIndex={copiedIndex} 
-        />
-        <StorageData 
-          data={hasSessionStorage ? storage.sessionStorage : null} 
-          title="Session Storage" 
-          limit={sessionLimit} 
-          setLimit={setSessionLimit} 
-          onCopy={handleCopy} 
-          copiedIndex={copiedIndex} 
-        />
-      </div>
+    <div className="standard-grid md:grid-cols-2">
+      <StorageData 
+        data={hasLocalStorage ? storage.localStorage : null} 
+        title="Local Storage" 
+        limit={localLimit} 
+        setLimit={setLocalLimit} 
+        onCopy={handleCopy} 
+        copiedIndex={copiedIndex} 
+      />
+      <StorageData 
+        data={hasSessionStorage ? storage.sessionStorage : null} 
+        title="Session Storage" 
+        limit={sessionLimit} 
+        setLimit={setSessionLimit} 
+        onCopy={handleCopy} 
+        copiedIndex={copiedIndex} 
+      />
     </div>
   );
 }

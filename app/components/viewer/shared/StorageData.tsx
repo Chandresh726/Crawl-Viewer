@@ -1,4 +1,4 @@
-import { IconCheck, IconCopy } from '@tabler/icons-react';
+import CopyButton from './CopyButton';
 
 interface StorageDataProps {
   data: Record<string, string> | null;
@@ -11,21 +11,25 @@ interface StorageDataProps {
 
 export default function StorageData({ data, title, limit, setLimit, onCopy, copiedIndex }: StorageDataProps) {
   return (
-    <div className="bg-white p-6 shadow-sm border border-gray-200">
+    <div className="standard-card">
       <h3 className="text-lg font-semibold text-gray-900 mb-4 text-center">{title}</h3>
       <hr className="my-2" />
       {data ? (
         <div className="space-y-3">
           {Object.entries(data).slice(0, limit).map(([key, value], i) => (
             <div key={i} className="border-b border-gray-100 pb-3 last:border-0 last:pb-0">
-              <div className="text-sm font-medium text-gray-500 truncate">{key}</div>
+              <div className="standard-text-secondary font-medium truncate">{key}</div>
               <div className="mt-1 flex items-center justify-between">
-                <div className="text-sm text-gray-900 truncate flex-1">
+                <div className="standard-text text-sm truncate flex-1">
                   {typeof value === 'string' ? value : JSON.stringify(value)}
                 </div>
-                <button className="ml-2 text-blue-600 hover:underline text-xs cursor-pointer" onClick={() => onCopy(typeof value === 'string' ? value : JSON.stringify(value), i)}>
-                  {copiedIndex === i ? <IconCheck className="w-4 h-4 text-green-600" /> : <IconCopy className="w-4 h-4 hover:text-blue-800" />}
-                </button>
+                <CopyButton 
+                  value={typeof value === 'string' ? value : JSON.stringify(value)}
+                  index={i}
+                  copiedIndex={copiedIndex}
+                  onCopy={onCopy}
+                  className="ml-2"
+                />
               </div>
             </div>
           ))}
@@ -43,7 +47,7 @@ export default function StorageData({ data, title, limit, setLimit, onCopy, copi
           </div>
         </div>
       ) : (
-        <p className="text-xs text-gray-500">No data available.</p>
+        <p className="standard-text-secondary text-sm">No data available.</p>
       )}
     </div>
   );

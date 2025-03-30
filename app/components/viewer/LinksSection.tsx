@@ -13,36 +13,36 @@ export default function LinksSection({ links }: LinksSectionProps) {
   const [externalLimit, setExternalLimit] = useState(5);
 
   return (
-    <div className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6">
-        <div className="bg-white p-4 md:p-6 shadow-sm border border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4 text-center">
-            Internal Links ({links.internal.length})
-          </h3>
-          <hr className="my-2" />
-          {links.internal.length > 0 ? (
-            <LinksList 
-              links={links.internal} 
-              limit={internalLimit} 
-              setLimit={setInternalLimit} 
-            />
-          ) : (
-            <p className="text-sm text-gray-500">No internal links available.</p>
-          )}
-        </div>
-        <div className="bg-white p-4 md:p-6 shadow-sm border border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4 text-center">External Links ({links.external.length})</h3>
-          <hr className="my-2" />
-          {links.external.length > 0 ? (
-            <LinksList 
-              links={links.external} 
-              limit={externalLimit} 
-              setLimit={setExternalLimit} 
-            />
-          ) : (
-            <p className="text-sm text-gray-500">No external links available.</p>
-          )}
-        </div>
+    <div className="standard-grid md:grid-cols-2">
+      <div className="standard-card">
+        <h3 className="section-header">
+          Internal Links ({links.internal.length})
+        </h3>
+        <hr className="mb-4" />
+        {links.internal.length > 0 ? (
+          <LinksList 
+            links={links.internal} 
+            limit={internalLimit} 
+            setLimit={setInternalLimit} 
+          />
+        ) : (
+          <p className="standard-text-secondary">No internal links available.</p>
+        )}
+      </div>
+      <div className="standard-card">
+        <h3 className="section-header">
+          External Links ({links.external.length})
+        </h3>
+        <hr className="mb-4" />
+        {links.external.length > 0 ? (
+          <LinksList 
+            links={links.external} 
+            limit={externalLimit} 
+            setLimit={setExternalLimit} 
+          />
+        ) : (
+          <p className="standard-text-secondary">No external links available.</p>
+        )}
       </div>
     </div>
   );

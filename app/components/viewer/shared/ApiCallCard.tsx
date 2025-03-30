@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { IconChevronUp, IconChevronDown, IconCheck, IconCopy } from '@tabler/icons-react';
+import { IconChevronUp, IconChevronDown } from '@tabler/icons-react';
 import { ApiCall } from '@/app/types/report';
 import { parseUrl } from '@/app/utils/url';
 import JsonViewer, { JsonValue } from '@/app/components/JsonViewer';
 import { motion, AnimatePresence } from 'framer-motion';
+import CopyButton from './CopyButton';
 
 interface ApiCallCardProps {
   call: ApiCall;
@@ -33,11 +34,11 @@ export default function ApiCallCard({ call }: ApiCallCardProps) {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-white shadow-sm border border-gray-200 overflow-hidden rounded-2xl"
+      className="standard-container rounded-2xl overflow-hidden"
     >
       <motion.div 
         whileHover={{ backgroundColor: 'rgba(0,0,0,0.02)' }}
-        className="p-4 cursor-pointer transition-colors flex justify-between items-center"
+        className="p-4 cursor-pointer flex justify-between items-center"
         onClick={() => setExpanded(!expanded)}
       >
         <div className="flex items-center space-x-3">
@@ -63,18 +64,22 @@ export default function ApiCallCard({ call }: ApiCallCardProps) {
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="border-t border-gray-200 divide-y divide-gray-200 bg-white"
+            className="divide-y standard-border bg-white"
           >
             {/* Query String */}
             {params && (
               <div className="p-4 bg-gray-50">
-                <h4 className="text-sm font-medium text-gray-900 mb-2 flex justify-between items-center">
+                <h4 className="text-sm font-medium standard-text mb-2 flex justify-between items-center">
                   Query String
-                  <button className="ml-2 text-blue-600 hover:underline text-xs cursor-pointer" onClick={() => handleCopy(params, 3)}>
-                    {copiedIndex === 3 ? <IconCheck className="w-4 h-4 text-green-600" /> : <IconCopy className="w-4 h-4 hover:text-blue-800" />}
-                  </button>
+                  <CopyButton 
+                    value={params}
+                    index={3}
+                    copiedIndex={copiedIndex}
+                    onCopy={handleCopy}
+                    className="ml-2"
+                  />
                 </h4>
-                <div className="bg-white p-4 border border-gray-200 text-xs">
+                <div className="bg-white p-4 standard-border text-xs">
                   <span className="text-gray-900 break-all">{params}</span>
                 </div>
               </div>
@@ -82,13 +87,17 @@ export default function ApiCallCard({ call }: ApiCallCardProps) {
 
             {/* Request Headers */}
             <div className="p-4 bg-gray-50">
-              <h4 className="text-sm font-medium text-gray-900 mb-2 flex justify-between items-center">
+              <h4 className="text-sm font-medium standard-text mb-2 flex justify-between items-center">
                 Request Headers
-                <button className="ml-2 text-blue-600 hover:underline text-xs cursor-pointer" onClick={() => handleCopy(JSON.stringify(call.headers), 0)}>
-                  {copiedIndex === 0 ? <IconCheck className="w-4 h-4 text-green-600" /> : <IconCopy className="w-4 h-4 hover:text-blue-800" />}
-                </button>
+                <CopyButton 
+                  value={JSON.stringify(call.headers)}
+                  index={0}
+                  copiedIndex={copiedIndex}
+                  onCopy={handleCopy}
+                  className="ml-2"
+                />
               </h4>
-              <div className="bg-white p-4 border border-gray-200 text-xs whitespace-pre-wrap break-all">
+              <div className="bg-white p-4 standard-border text-xs whitespace-pre-wrap break-all">
                 <div className="w-full space-y-1">
                   {Object.entries(call.headers).map(([key, value], idx) => (
                     <div key={idx} className="flex items-start">
@@ -104,13 +113,17 @@ export default function ApiCallCard({ call }: ApiCallCardProps) {
             {call.response && (
               <>
                 <div className="p-4 bg-gray-50">
-                  <h4 className="text-sm font-medium text-gray-900 mb-2 flex justify-between items-center">
+                  <h4 className="text-sm font-medium standard-text mb-2 flex justify-between items-center">
                     Response Headers
-                    <button className="ml-2 text-blue-600 hover:underline text-xs cursor-pointer" onClick={() => handleCopy(JSON.stringify(call.response?.headers ?? {}), 1)}>
-                      {copiedIndex === 1 ? <IconCheck className="w-4 h-4 text-green-600" /> : <IconCopy className="w-4 h-4 hover:text-blue-800" />}
-                    </button>
+                    <CopyButton 
+                      value={JSON.stringify(call.response?.headers ?? {})}
+                      index={1}
+                      copiedIndex={copiedIndex}
+                      onCopy={handleCopy}
+                      className="ml-2"
+                    />
                   </h4>
-                  <div className="bg-white p-4 border border-gray-200 text-xs whitespace-pre-wrap break-all">
+                  <div className="bg-white p-4 standard-border text-xs whitespace-pre-wrap break-all">
                     <div className="w-full space-y-1">
                       {Object.entries(call.response.headers).map(([key, value], idx) => (
                         <div key={idx} className="flex items-start">
@@ -122,13 +135,17 @@ export default function ApiCallCard({ call }: ApiCallCardProps) {
                   </div>
                 </div>
                 <div className="p-4 bg-gray-50">
-                  <h4 className="text-sm font-medium text-gray-900 mb-2 flex justify-between items-center">
+                  <h4 className="text-sm font-medium standard-text mb-2 flex justify-between items-center">
                     Response Body
-                    <button className="ml-2 text-blue-600 hover:underline text-xs cursor-pointer" onClick={() => handleCopy(JSON.stringify(call.response?.body || {}), 2)}>
-                      {copiedIndex === 2 ? <IconCheck className="w-4 h-4 text-green-600" /> : <IconCopy className="w-4 h-4 hover:text-blue-800" />}
-                    </button>
+                    <CopyButton 
+                      value={JSON.stringify(call.response?.body || {})}
+                      index={2}
+                      copiedIndex={copiedIndex}
+                      onCopy={handleCopy}
+                      className="ml-2"
+                    />
                   </h4>
-                  <div className="bg-white p-4 border border-gray-200 text-xs">
+                  <div className="bg-white p-4 standard-border text-xs">
                     <JsonViewer data={(call.response?.body as JsonValue) ?? {}} />
                   </div>
                 </div>
