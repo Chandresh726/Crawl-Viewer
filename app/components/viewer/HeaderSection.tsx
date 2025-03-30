@@ -1,14 +1,22 @@
 import { parseUrl } from '@/app/utils/url';
-import { Metadata } from '@/app/types/report';
+import { Metadata, ReportData } from '@/app/types/report';
+import { downloadJson } from '@/app/utils/download';
+import { IconDownload } from '@tabler/icons-react';
 
 interface HeaderSectionProps {
   url: string;
   metadata: Metadata;
+  data: ReportData;
 }
 
-export default function HeaderSection({ url, metadata }: HeaderSectionProps) {
+export default function HeaderSection({ url, metadata, data }: HeaderSectionProps) {
   const { domain, path, params } = parseUrl(url);
   const hasContent = metadata?.title || metadata?.description || metadata?.keywords;
+
+  const handleDownload = () => {
+    const filename = `${domain}${path.replace(/\//g, '_')}.json`;
+    downloadJson(data, filename);
+  };
 
   return (
     <div className="standard-section">
@@ -23,6 +31,13 @@ export default function HeaderSection({ url, metadata }: HeaderSectionProps) {
             <span className="standard-text-secondary">{path}</span>
           </div>
         </div>
+        <button
+          onClick={handleDownload}
+          className="mt-4 md:mt-0 inline-flex items-center p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+        >
+          <IconDownload className="w-5 h-5 mr-2" />
+          JSON
+        </button>
       </div>
       {params && (
         <div className="text-sm standard-text-secondary mt-2 ">Params: {params}</div>
@@ -46,7 +61,7 @@ export default function HeaderSection({ url, metadata }: HeaderSectionProps) {
               <span className="text-sm font-bold standard-text-secondary">Keywords</span>
               <div className="flex flex-wrap gap-2 mt-1">
                 {metadata.keywords.split(',').map((keyword: string, i: number) => (
-                  <span 
+                  <span
                     key={i}
                     className="px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-xs"
                   >

@@ -32,14 +32,14 @@ export default function ReportViewer({ data }: ReportViewerProps) {
 
   return (
     <motion.div
-      className="min-h-screen bg-gray-50 p-4"
+      className="min-h-screen p-4"
       variants={container}
       initial="hidden"
       animate="show"
     >
       <div className="max-w-7xl mx-auto space-y-4">
         <motion.div variants={item}>
-          <HeaderSection url={data.url} metadata={data.metadata} />
+          <HeaderSection url={data.url} metadata={data.metadata} data={data} />
         </motion.div>
 
         <motion.div variants={item}>
