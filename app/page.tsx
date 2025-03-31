@@ -98,7 +98,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <div className="bg-white standard-card shadow-sm border border-gray-200 p-8 w-full max-w-md">
+      <div className="standard-card p-8 w-full max-w-md">
         <div className="flex items-center justify-center mb-6">
           <IconSpider className="w-12 h-12 text-red-500" />
         </div>
